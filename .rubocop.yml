@@ -3,4 +3,5 @@ inherit_gem:
   standard: config/base.yml
 AllCops:
   TargetRubyVersion: '2.6'
-
+Style/GlobalVars:
+  Enabled: false
