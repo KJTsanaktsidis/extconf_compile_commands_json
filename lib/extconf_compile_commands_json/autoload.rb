@@ -22,3 +22,7 @@ module ExtconfCompileCommandsJson
 end
 
 MakeMakefile.prepend ExtconfCompileCommandsJson::AutoloadPatch
+# We have to patch the toplevel binding directly as well, because requiring
+# mkmf includes it into main straight away. So, prepending to MakeMakefile
+# will be ignored if someone calls "create_makefile" in their extconf.rb
+prepend ExtconfCompileCommandsJson::AutoloadPatch
