@@ -14,7 +14,10 @@ Gem::Specification.new do |s|
   s.license = "MIT"
   s.homepage = "https://github.com/KJTsanaktsidis/extconf_compile_commands_json"
 
-  s.files = ["lib/extconf_compile_commands_json.rb"]
+  s.files = %w[
+    lib/extconf_compile_commands_json.rb
+    lib/extconf_compile_commands_json/autoload.rb
+  ]
 
   s.required_ruby_version = ">= 2.6.0"
   s.add_development_dependency "standard", "~> 1.12"
