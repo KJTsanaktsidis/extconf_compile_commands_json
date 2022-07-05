@@ -6,7 +6,10 @@
 # scripts.
 
 require "mkmf"
-require "extconf_compile_commands_json"
+# the require_relative looks stupid, but it ensures that you can load this patch
+# simply by running adding -r/path/to/autoload.rb to your Ruby invocation without
+# needing to muck about with $LOAD_PATH or Bundler.
+require_relative "../extconf_compile_commands_json"
 
 module ExtconfCompileCommandsJson
   module AutoloadPatch
