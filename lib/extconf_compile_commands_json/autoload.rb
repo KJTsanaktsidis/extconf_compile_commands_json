@@ -11,18 +11,16 @@ require "mkmf"
 # needing to muck about with $LOAD_PATH or Bundler.
 require_relative "../extconf_compile_commands_json"
 
-module ExtconfCompileCommandsJson
-  module AutoloadPatch
-    def create_makefile(*args)
-      super
-      ExtconfCompileCommandsJson.generate!
-      ExtconfCompileCommandsJson.symlink!
-    end
+# We have to patch MakeMakefile directly, rather than prepending to it, because
+# requiring mkmf includes it into the toplevel main object straight away. So prepending
+# here would be too late.
+
+module MakeMakefile
+  alias_method :__extconfcc_orig_create_makefile, :create_makefile
+  def create_makefile(*args)
+    r = __extconfcc_orig_create_makefile(*args)
+    ExtconfCompileCommandsJson.generate!
+    ExtconfCompileCommandsJson.symlink!
+    r
   end
 end
-
-MakeMakefile.prepend ExtconfCompileCommandsJson::AutoloadPatch
-# We have to patch the toplevel binding directly as well, because requiring
-# mkmf includes it into main straight away. So, prepending to MakeMakefile
-# will be ignored if someone calls "create_makefile" in their extconf.rb
-prepend ExtconfCompileCommandsJson::AutoloadPatch
