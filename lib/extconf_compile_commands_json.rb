@@ -7,15 +7,10 @@ require "fileutils"
 
 module ExtconfCompileCommandsJson
   def self.generate!
-    mkmf_cflags = []
     # Start by expanding what's in our magic variables
-    [$INCFLAGS, $CPPFLAGS, $CFLAGS, $COUTFLAGS].each do |v|
-      next unless v
-      mkmf_cflags.concat Shellwords.split(v)
-    end
-    # expand that with the contents of the ruby options
-    mkmf_cflags.map! do |flag|
-      flag
+    mkmf_cflags = [$INCFLAGS, $CPPFLAGS, $CFLAGS, $COUTFLAGS].map { |flag|
+      # expand that with the contents of the ruby options
+      (flag || "")
         .gsub("$(arch_hdrdir)", $arch_hdrdir || "")
         .gsub("$(hdrdir)", $hdrdir || "")
         .gsub("$(srcdir)", $srcdir || "")
@@ -27,8 +22,12 @@ module ExtconfCompileCommandsJson
         .gsub("$(debugflags)", RbConfig::CONFIG["debugflags"] || "")
         .gsub("$(warnflags)", RbConfig::CONFIG["warnflags"] || "")
         .gsub("$(empty)", "")
-    end
-    mkmf_cflags.reject! { |f| f.empty? }
+    }.flat_map { |flags|
+      # Need to shellwords expand them (_after_ doing the $() subst's)
+      Shellwords.split(flags)
+    }.reject { |flag|
+      flag.empty?
+    }
     # This makes sure that #include "extconf.h" works
     mkmf_cflags = ["-iquote#{File.realpath(Dir.pwd)}"] + mkmf_cflags
     compile_commands = $srcs.map do |src|
