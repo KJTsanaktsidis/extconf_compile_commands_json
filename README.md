@@ -27,7 +27,7 @@ ExtconfCompileCommandsJson.symlink!
 Modifying extconf.rb is fine if you own all the build config for your project, but if, for example, you're working on somebody else's project and don't want to modify their extconf.rb, you can still use extconf_compile_commands_json! Something like the following should work, if using rake-compiler:
 
 ```shell
-RUBYOPT="$RUBYOPT $(gem which extconf_compile_commands_json/autoload)" bundle exec rake compile
+RUBYOPT="$RUBYOPT -r$(gem which extconf_compile_commands_json/autoload)" bundle exec rake compile
 ```
 
 That will load up extconf_compile_commands_json as a patch on mkmf and inject it into any Ruby process that your Rake invocation spawns.
