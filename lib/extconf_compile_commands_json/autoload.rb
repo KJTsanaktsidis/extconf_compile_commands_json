@@ -17,8 +17,8 @@ require_relative "../extconf_compile_commands_json"
 
 module MakeMakefile
   alias_method :__extconfcc_orig_create_makefile, :create_makefile
-  def create_makefile(*args)
-    r = __extconfcc_orig_create_makefile(*args)
+  def create_makefile(...)
+    r = __extconfcc_orig_create_makefile(...)
     ExtconfCompileCommandsJson.generate!
     ExtconfCompileCommandsJson.symlink!
     r
